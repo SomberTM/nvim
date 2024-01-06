@@ -37,7 +37,6 @@ I hope you enjoy your Neovim journey,
 
 P.S. You can delete this when you're done too. It's your config now :)
 --]]
-
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
@@ -85,29 +84,45 @@ require('lazy').setup({
       -- Automatically install LSPs to stdpath for neovim
       { 'williamboman/mason.nvim', config = true },
       'williamboman/mason-lspconfig.nvim',
-
+      'mhartington/formatter.nvim',
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
-
+      { 'j-hui/fidget.nvim',       opts = {} },
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
-    },
-  },
-  {
-    'ThePrimeagen/harpoon',
-	  dependencies = { 'nvim-lua/plenary.nvim' },
-	  config = function()
-		  vim.keymap.set('n', '<leader>pu', function() require("harpoon.ui").toggle_quick_menu(); end, { desc = 'Toggle poon menu' })
-	    vim.keymap.set('n', '<leader>pm', function() require("harpoon.mark").add_file() end, { desc = 'Mark poon file' })
-      vim.keymap.set('n', '<leader>pn', function() require("harpoon.ui").nav_next() end, { desc = 'Next poon file' })
-      vim.keymap.set('n', '<leader>pp', function() require("harpoon.ui").nav_prev() end, { desc = 'Previous poon file' })
+      config = function()
+        require("mason-lspconfig").setup({
+          ensure_installed = {
+            "lua_ls",
+            "tsserver",
+            "rust_analyzer",
+            "csharp_ls",
+            "dockerls",
+            "html", "htmx",
+            "jsonls",
+            "marksman",
+            "pyright",
+            "sqlls",
+            "tailwindcss",
+            "eslint",
+          }
+        })
 
-      for i = 1, 3, 1 do
-        vim.keymap.set('n', '<leader>p' .. i, function() require("harpoon.ui").nav_file(i) end, { desc = 'Navigate to poon ' .. i })
+        require("formatter").setup({
+          filetypes = {
+            lua = {
+              require("formatter.filetypes.lua").stylua
+            },
+            ["*"] = {
+              -- "formatter.filetypes.any" defines default configurations for any
+              -- filetype
+              require("formatter.filetypes.any").remove_trailing_whitespace
+            }
+          }
+        })
+
       end
-
-    end,
+    }
   },
   {
     -- Autocompletion
@@ -127,7 +142,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim',  opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -277,7 +292,7 @@ require('lazy').setup({
   --    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
 }, {})
 
 -- [[ Setting options ]]
@@ -434,7 +449,8 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash' },
+    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim',
+      'bash' },
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = false,
