@@ -8,7 +8,7 @@ return {
 		vim.keymap.set('n', '<leader>pn', function() require("harpoon.ui").nav_next() end, { desc = 'Next poon file' })
 		vim.keymap.set('n', '<leader>pp', function() require("harpoon.ui").nav_prev() end, { desc = 'Previous poon file' })
 
-		for i = 1, 3, 1 do
+		for i = 1, 10, 1 do
 			vim.keymap.set('n', '<leader>p' .. i, function() require("harpoon.ui").nav_file(i) end,
 			{ desc = 'Navigate to poon ' .. i })
 		end
